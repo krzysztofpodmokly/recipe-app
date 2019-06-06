@@ -6,8 +6,8 @@ const RecipesList = ({ recipes, onRecipeSelect }) => {
         return (
                 <RecipeItem
                     key={ recipe.recipe_id }
-                  recipe={ recipe }
-                  onRecipeSelect={ onRecipeSelect }
+                    recipe={ recipe }
+                    onRecipeSelect={ onRecipeSelect }
                 />
         );
     });
