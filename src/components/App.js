@@ -3,20 +3,32 @@ import instance from './apis/food2fork';
 import SearchBar from './SearchBar';
 import RecipesList from './RecipesList';
 import RecipeDetails from './RecipeDetails';
+import Error from './Error';
 
 const KEY = '6e981cfec347ee90bf44bf1c93ac02c5'
 
 class App extends React.Component {
-    state = { recipes: [], selectedRecipe: null }
+    state = { recipes: [], selectedRecipe: null, hasError: false }
 
     onFormSubmit = async (term) => {
         // Make API call
-        const response = await instance.get('/search', {
+        try {
+          const response = await instance.get('/search', {
             params: {
                 key: KEY,
                 q: term
             }
-        });
+          });
+
+          // Update state by recipes fetched from food2fork
+          this.setState({
+            recipes: response.data.recipes,
+            selectedRecipe: response.data.recipes[0]
+          })
+        } catch (err) { // catch error if API limit is exceeded
+          this.setState({ hasError: true });
+        }
+          
         
         // data = {
         //     f2f_url: url
@@ -29,17 +41,22 @@ class App extends React.Component {
         //     title: "Random spice"
         // }
 
-        console.log(response.data.recipes)
-        // Update state by recipes fetched from food2fork
-        this.setState({ recipes: response.data.recipes })
+        
     }
 
     onRecipeSelect = (recipe) => {
-        console.log(recipe)
-        this.setState({ selectedRecipe: recipe })
+        this.setState({ selectedRecipe: recipe });
+    }
+
+    componentDidMount = () => {
+      this.onFormSubmit('chicken');
     }
 
     render() {
+      if (this.state.hasError) {
+        // Rendering custom fallback UI
+        return <Error reason="API calls exceeded!" meta="Please try again tomorrow." />
+      }
         return (
           <div className="ui container">
             <SearchBar onInputSubmit={this.onFormSubmit} />

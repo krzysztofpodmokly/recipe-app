@@ -3,7 +3,13 @@ import React from 'react';
 const RecipeDetails = ({ recipe }) => {
 
     if (!recipe) {
-        return <div>Loading...</div>
+        return (
+            <div className="ui segment">
+                <div className="ui active inverted dimmer">
+                    <div className="ui text loader">Recipe loading</div>
+                </div>
+            </div>
+        )
     }
 
     return (
