@@ -4,78 +4,81 @@ import SearchBar from './SearchBar';
 import RecipesList from './RecipesList';
 import RecipeDetails from './RecipeDetails';
 import Error from './Error';
+import './styles/utilities.css';
 
 const KEY = '6e981cfec347ee90bf44bf1c93ac02c5'
 
 class App extends React.Component {
-    state = { recipes: [], selectedRecipe: null, hasError: false }
+  state = { recipes: [], selectedRecipe: null, hasError: false };
 
-    onFormSubmit = async (term) => {
-        // Make API call
-        try {
-          const response = await instance.get('/search', {
-            params: {
-                key: KEY,
-                q: term
-            }
-          });
-
-          // Update state by recipes fetched from food2fork
-          this.setState({
-            recipes: response.data.recipes,
-            selectedRecipe: response.data.recipes[0]
-          })
-        } catch (err) { // catch error if API limit is exceeded
-          this.setState({ hasError: true });
+  onFormSubmit = async term => {
+    // Make API call
+    try {
+      const response = await instance.get("/search", {
+        params: {
+          key: KEY,
+          q: term
         }
-          
-        
-        // data = {
-        //     f2f_url: url
-        //     image_url: url
-        //     publisher: "All recipes"
-        //     publisher_url: url
-        //     recipe_id: "2193"
-        //     social_rank: 100
-        //     source_url: url
-        //     title: "Random spice"
-        // }
+      });
 
-        
+      // Update state by recipes fetched from food2fork
+      this.setState({
+        recipes: response.data.recipes,
+        selectedRecipe: response.data.recipes[0]
+      });
+    } catch (err) {
+      // catch error if API limit is exceeded
+      this.setState({ hasError: true });
     }
 
-    onRecipeSelect = (recipe) => {
-        this.setState({ selectedRecipe: recipe });
-    }
+    // data = {
+    //     f2f_url: url
+    //     image_url: url
+    //     publisher: "All recipes"
+    //     publisher_url: url
+    //     recipe_id: "2193"
+    //     social_rank: 100
+    //     source_url: url
+    //     title: "Random spice"
+    // }
+  };
 
-    componentDidMount = () => {
-      this.onFormSubmit('chicken');
-    }
+  onRecipeSelect = recipe => {
+    this.setState({ selectedRecipe: recipe });
+  };
 
-    render() {
-      if (this.state.hasError) {
-        // Rendering custom fallback UI
-        return <Error reason="API calls exceeded!" meta="Please try again tomorrow." />
-      }
-        return (
-          <div className="ui container">
-            <SearchBar onInputSubmit={this.onFormSubmit} />
-            <div className="ui grid">
-              <div className="ui row">
-                <div className="nine wide column">
-                  <RecipesList
-                    recipes={this.state.recipes}
-                    onRecipeSelect={this.onRecipeSelect}
-                  />
-                </div>
-                <div className="seven wide column">
-                  <RecipeDetails recipe={this.state.selectedRecipe} />
-                </div>
-              </div>
+  componentDidMount = () => {
+    this.onFormSubmit("chicken");
+  };
+
+  render() {
+    if (this.state.hasError) {
+      // Rendering custom fallback UI
+      return (
+        <div className="center-text">
+          <Error reason="API calls exceeded!" meta="Please try again tomorrow." />
+        </div>
+      );
+    }
+    return (
+      <div className="ui container">
+        <SearchBar onInputSubmit={this.onFormSubmit} />
+        <div className="ui grid">
+          <div className="ui row">
+            <div className="nine wide column">
+              <RecipesList
+                recipes={this.state.recipes}
+                onRecipeSelect={this.onRecipeSelect}
+              />
+            </div>
+            <div className="seven wide column">
+              <RecipeDetails recipe={this.state.selectedRecipe} />
             </div>
           </div>
-        );
-    }
+        </div>
+      </div>
+    );
+  }
 };
 
 export default App;
