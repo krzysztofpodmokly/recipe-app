@@ -5,7 +5,6 @@ import { fetchRecipes } from '../actions';
 
 class SearchBar extends React.Component {
     renderInput = props => {
-      console.log(props);
       return (
         <div className="field">
           <label>{props.label}</label>
@@ -15,7 +14,7 @@ class SearchBar extends React.Component {
     };
 
     onSubmit = (formValues) => {
-      this.props.fetchRecipes(formValues);
+      console.log(this.props.fetchRecipes(formValues.title)); // formValues.title comes from <Field />
     }
 
     render() {
