@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles/RecipeItem.css';
+import '../styles/RecipeItem.css';
 
 /* 
  'Pasta with tomato and spinach'

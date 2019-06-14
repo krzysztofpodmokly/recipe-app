@@ -1,33 +1,34 @@
 import React from 'react';
+import { Field, reduxForm } from 'redux-form';
+import { connect } from 'react-redux';
+import { fetchRecipes } from '../actions';
 
 class SearchBar extends React.Component {
-    state = { term: '' }
+    renderInput = props => {
+      console.log(props);
+      return (
+        <div className="field">
+          <label>{props.label}</label>
+          <input { ...props.input } autoComplete="off" />
+        </div>
+      );
+    };
 
-    onInputChange = (e) => {
-        this.setState({ term: e.target.value }); // Updating state by what was typed
-    }
-
-    onFormSubmit = (e) => {
-        e.preventDefault(); // Preventing App from reloading after Enter
-        this.props.onInputSubmit(this.state.term); // Transffering input value to App.js
+    onSubmit = (formValues) => {
+      this.props.fetchRecipes(formValues);
     }
 
     render() {
         return (
-          <div className="ui segment">
-            <form onSubmit={this.onFormSubmit} className="ui form">
-              <div className="field">
-                <label>Ingredient</label>
-                <input
-                  type="text"
-                  onChange={this.onInputChange}
-                  value={this.state.term}
-                />
-              </div>
-            </form>
-          </div>
+          <form onSubmit={this.props.handleSubmit(this.onSubmit)} className="ui form">
+            <Field name="title" component={this.renderInput} label="Ingredient" />
+          </form>
         );
-    }
+    };
 };
 
-export default SearchBar;
+const formWrapped = reduxForm({
+  form: 'fetchRecipes'
+})(SearchBar);
+
+export default connect(null, { fetchRecipes })(formWrapped);
